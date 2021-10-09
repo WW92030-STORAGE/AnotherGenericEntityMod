@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "idi",
+        "iei",
+        "idi"
+    ],
+    "key":
+    {
+        "i":
+        {
+            "item": "minecraft:iron_ingot"
+        },
+        "d":
+        {
+            "item": "minecraft:diamond"
+        },
+        "e":
+        {
+            "item": "minecraft:chorus_flower"
+        }
+    },
+    "result":
+    {
+        "item": "darkness:portal",
+        "count": 1
+    }
+}

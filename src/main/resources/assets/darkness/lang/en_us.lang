@@ -1,0 +1,9 @@
+//Items
+item.test_item.name=Copper Ingot
+
+//Blocks
+tile.portal.name=Portal Device
+
+//Entities
+entity.DARKNESS.name=DARKNESS
+entity.DARKNESSX.name=DARKNESS
