@@ -96,8 +96,11 @@ public class EntityDarkness extends EntityMob {
 	public boolean attackEntityFrom(DamageSource source, float amount) {
 		if (source.getImmediateSource() instanceof EntityArrow)
 			return false;
-		if (source.getImmediateSource() instanceof EntityPlayer)
+		if (source.getImmediateSource() instanceof EntityPlayer) {
+			double prob = 1.0 / 16.0;
+			if (Math.random() < prob) Reference.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
 			return false;
+		}
 		if (source.getImmediateSource() instanceof EntityPotion)
 			return false;
 		if (source == DamageSource.FALL)
