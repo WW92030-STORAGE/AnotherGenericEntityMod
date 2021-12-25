@@ -23,10 +23,10 @@ public class Reference {
 		return res % TAU;
 	}
 	
-	public static void open(String url) {
+	public static void open(String u) {
 		try {
 			Desktop d = Desktop.getDesktop();
-			d.browse(new URI(url));
+			d.browse(new URI(u));
 		}
 		catch (Exception e) {
 			System.out.println(e);
