@@ -1,5 +1,8 @@
 package darkness.mod.util;
 
+import java.awt.Desktop;
+import java.net.URI;
+
 public class Reference {
 	public static final String MODID = "darkness";
 	public static final String NAME = "Another Generic Entity Mod";
@@ -18,5 +21,15 @@ public class Reference {
 	//	if (dx < 0) res += Math.PI;
 		res = (res % TAU) + 10 * TAU;
 		return res % TAU;
+	}
+	
+	public static void open(String url) {
+		try {
+			Desktop d = Desktop.getDesktop();
+			d.browse(new URI(url));
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 }
