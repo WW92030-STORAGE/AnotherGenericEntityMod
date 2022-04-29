@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import darkness.mod.Main;
 import darkness.mod.entities.EntityDarkness;
+import darkness.mod.entities.EntityDarknessP;
 import darkness.mod.entities.EntityDarknessX;
 import darkness.mod.util.Reference;
 import net.minecraft.entity.Entity;
@@ -17,10 +18,10 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 public class EntityInit {
 	public static final int RANGE = 128;
 	public static final double SPEED = 0.375;
-	public static final boolean PERSISTENCE = false; // TODO add configs
 	public static void registerEntities() {
 		registerEntity("DARKNESS", EntityDarkness.class, Reference.ENTITY_DARKNESS, RANGE, true);
-		registerEntity("DARKNESSX", EntityDarknessX.class, Reference.ENTITY_DARKNESSX, RANGE, false);
+		registerEntity("DARKNESSX", EntityDarknessX.class, Reference.ENTITY_DARKNESS + 1, RANGE, false);
+		registerEntity("DARKNESSP", EntityDarknessP.class, Reference.ENTITY_DARKNESS + 2, RANGE, false);
 	}
 	
 	private static Biome[] biomes(net.minecraft.util.registry.RegistryNamespaced<ResourceLocation, Biome> in) {
@@ -41,6 +42,8 @@ public class EntityInit {
 		catch (Exception e) {
 			System.out.println(e);
 		}
+		
+		
 		
 		System.out.println("REGISTERED ENTITY " + name);
 	}
