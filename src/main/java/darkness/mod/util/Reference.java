@@ -11,7 +11,6 @@ public class Reference {
 	public static final String CLIENT = "darkness.mod.proxy.ClientProxy";
 	
 	public static final int ENTITY_DARKNESS = 120;
-	public static final int ENTITY_DARKNESSX = 121;
 	public static final double DEG = 180.0 / Math.PI;
 	public static final double TAU = 2.0 * Math.PI;
 	public static final double EPSILON = 0.000000001;

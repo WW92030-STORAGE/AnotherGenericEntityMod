@@ -21,10 +21,7 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityPotion;
-import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -33,13 +30,13 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityDarkness extends EntityMob {
+public class EntityDarknessP extends EntityMob {
 //	EntityMob test = new EntityVillager();
 //  EntityMob test2 = new EntityZombie();
 	
-	public static boolean persistence = false;
+	public static boolean persistence = true;
 	
-	public EntityDarkness(World worldIn) {
+	public EntityDarknessP(World worldIn) {
 		super(worldIn);
 	//	((EntityMob)this).setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD, (int) (1)));
 		if (this.persistence) enablePersistence();
@@ -58,7 +55,7 @@ public class EntityDarkness extends EntityMob {
 		this.tasks.addTask(6, new EntityAIMoveTowardsRestriction(this, 1.0D));	
 		this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, EntityInit.RANGE));
 		this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityDarknessX.class, EntityInit.RANGE));
-		this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityDarkness.class, EntityInit.RANGE));
+		this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityDarknessP.class, EntityInit.RANGE));
 		this.tasks.addTask(10, new EntityAIWander(this, 1));
 		this.tasks.addTask(11, new EntityAISwimming(this));
 		this.tasks.addTask(12, new EntityAILeapAtTarget(this, 0.8f));

@@ -35,11 +35,13 @@ import net.minecraft.world.World;
 
 public class EntityDarknessX extends EntityMob {
 	// new EntityVillager();
+	
+	public static boolean persistence = false;
 
 	public EntityDarknessX(World worldIn) {
 		super(worldIn);
 	//	((EntityMob)this).setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD, (int) (1)));
-		if (EntityInit.PERSISTENCE) enablePersistence();
+		if (this.persistence) enablePersistence();
 		((PathNavigateGround)this.getNavigator()).setBreakDoors(true);
 	}
 	
@@ -48,6 +50,7 @@ public class EntityDarknessX extends EntityMob {
     {
 		this.tasks.addTask(1, new EntityAITempt(this, 1, new ItemStack(Blocks.REDSTONE_BLOCK, 1).getItem(), false));
 		this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityDarkness.class, false, false));
+		this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityDarknessP.class, false, false));
 		this.tasks.addTask(3, new EntityAIAttackMelee(this, 1.2, true));
 		this.targetTasks.addTask(4, new EntityAIHurtByTarget(this, false));
 		this.tasks.addTask(5, new EntityAIOpenDoor(this, true));
@@ -88,7 +91,7 @@ public class EntityDarknessX extends EntityMob {
 	
 	@Override
 	protected boolean canDespawn() {
-		return !EntityInit.PERSISTENCE;
+		return !this.persistence;
 	}
 	
 	@Override
