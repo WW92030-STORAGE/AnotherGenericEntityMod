@@ -1,7 +1,6 @@
 {
-    "parent": "block/cube_all",
-    "textures":
-    {
-        "all": "darkness:blocks/black_square"
-    }
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "darkness:block/portal"
+  }
 }

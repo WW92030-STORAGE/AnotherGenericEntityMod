@@ -1,41 +1,59 @@
 package darkness.mod;
 
-import darkness.mod.procedures.PlayerData;
-import darkness.mod.proxy.CommonProxy;
+import com.mojang.logging.LogUtils;
+import darkness.mod.blocks.ModBlocks;
+import darkness.mod.entities.ModEntityTypes;
+import darkness.mod.items.ModItems;
 import darkness.mod.util.Reference;
-import darkness.mod.util.handlers.RegistryHandler;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.slf4j.Logger;
 
-@Mod(modid = Reference.MODID, name = Reference.NAME, version = Reference.VERSION)
-public class Main 
+// The value here should match an entry in the META-INF/mods.toml file
+@Mod(Reference.MODID)
+@Mod.EventBusSubscriber(modid = Reference.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+public class Main
 {
-	@Instance
-	public static Main instance;
-	
-	@SidedProxy(clientSide = Reference.CLIENT, serverSide = Reference.COMMON)
-	public static CommonProxy proxy;
-	
-	@EventHandler
-	public static void preInit(FMLPreInitializationEvent event) {	
-		RegistryHandler.preInitRegistries(event);
-		PlayerData pd = new PlayerData();
-		pd.preInit(event);
-		
-	//	System.out.println("!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!!");
-	}
-	
-	@EventHandler
-	public static void init(FMLInitializationEvent event) {
-		RegistryHandler.InitRegistries(event);
-	}
-	
-	@EventHandler
-	public static void postInit(FMLPostInitializationEvent event) {
-	}
+    // Directly reference a slf4j logger
+    private static final Logger LOGGER = LogUtils.getLogger();
+
+    public Main()
+    {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        ModItems.ITEMS.register(modEventBus);
+        ModBlocks.BLOCKS.register(modEventBus);
+        ModEntityTypes.ENTITY_TYPES.register(modEventBus);
+
+        // Register the commonSetup method for modloading
+        modEventBus.addListener(this::commonSetup);
+
+        // Register ourselves for server and other game events we are interested in
+        MinecraftForge.EVENT_BUS.register(this);
+
+        for (int i = 0; i < 64; i++) System.out.println("MOD SETUP");
+    }
+    private void commonSetup(final FMLCommonSetupEvent event)
+    {
+        ModEntityTypes.registerSpawns(event);
+
+        for (int i = 0; i < 64; i++) System.out.println("SETUP COMMON");
+    }
+
+    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
+
+    public static class ClientModEvents
+    {
+        @SubscribeEvent
+        public static void onClientSetup(FMLClientSetupEvent event)
+        {
+
+            for (int i = 0; i < 64; i++) System.out.println("SETUP CLIENT");
+        }
+    }
 }
