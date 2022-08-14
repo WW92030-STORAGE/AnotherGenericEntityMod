@@ -1,0 +1,11 @@
+{
+  "type": "forge:add_spawns",
+  "biomes": "#minecraft:is_taiga",
+  "spawners":
+  {
+    "type": "darkness:darkness", // Type of mob to spawn
+    "weight": 40, // int, spawn weighting
+    "minCount": 1, // int, minimum pack size
+    "maxCount": 4 // int, maximum pack size
+  }
+}
