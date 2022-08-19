@@ -9,6 +9,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -33,17 +34,14 @@ public class PortalBlock extends Block {
         return super.use(state, level, blockPos, player, hand, blockHitResult);
     }
 
-    double numerator = 5;
-    double denominator = 1000;
-
     @Override
     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rs) {
         super.tick(state, world, pos, rs);
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
-        double rng = Math.random() * denominator;
-        if (rng >= numerator) return;
+        int rng = rs.nextInt(world.getGameRules().getInt(GameRules.RULE_RANDOMTICKING));
+        if (rng > 1) return;
 
         if (world.getLevel().isClientSide()) { // this can't happen
             System.out.println("LOL");
