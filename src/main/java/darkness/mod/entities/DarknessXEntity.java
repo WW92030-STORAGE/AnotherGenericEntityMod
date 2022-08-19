@@ -84,7 +84,7 @@ public class DarknessXEntity extends Monster {
     }
     
     protected boolean shouldDespawnInPeaceful() {
-        return false;
+        return true;
     }
 
     public void tick() {
