@@ -76,6 +76,7 @@ public class DarknessXEntity extends Monster {
         if (src == DamageSource.LIGHTNING_BOLT) return false;
         if (src.getEntity() instanceof Player) return false;
         if (src.getEntity() instanceof Arrow) return false;
+        if (src.getEntity() instanceof IronGolem) return false;
 
         super.hurt(src, dmg);
 
