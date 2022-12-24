@@ -1,40 +1,40 @@
-package darkness.mod.entities;
+package com.notasmr.darkness.entity;
 
-import darkness.mod.util.Reference;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Arrow;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
+import com.notasmr.darkness.util.Reference;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.pathfinding.GroundPathNavigator;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
+import net.minecraft.util.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IServerWorld;
+import net.minecraft.world.World;
 
-public class DarknessXEntity extends PathfinderMob {
-    
-    public DarknessXEntity(EntityType<? extends DarknessXEntity> type, Level level) {
+import javax.annotation.Nullable;
+
+public class DarknessXEntity extends CreatureEntity {
+    public DarknessXEntity(EntityType<? extends DarknessXEntity> type, World level) {
         super(type, level);
-        ((GroundPathNavigation)this.getNavigation()).setCanPassDoors(true);
-        ((GroundPathNavigation)this.getNavigation()).setCanOpenDoors(true);
+        ((GroundPathNavigator)this.getNavigation()).setCanOpenDoors(true);
     }
 
-    public static AttributeSupplier.Builder registerAttributes() {
-        return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 40)
+    public static AttributeModifierMap.MutableAttribute registerAttributes() {
+        return MonsterEntity.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 40.0D)
                 .add(Attributes.MOVEMENT_SPEED, ModEntityTypes.SPEED)
                 .add(Attributes.FOLLOW_RANGE, ModEntityTypes.RANGE)
                 .add(Attributes.ATTACK_DAMAGE, 10)
@@ -42,19 +42,20 @@ public class DarknessXEntity extends PathfinderMob {
     }
 
     protected void registerGoals() {
-        this.goalSelector.addGoal(1, new TemptGoal(this, 1, Ingredient.of(new ItemStack(Blocks.REDSTONE_BLOCK)), false));
-        this.goalSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, DarknessEntity.class, true));
+        this.targetSelector.addGoal(1, new TemptGoal(this, 1, Ingredient.of(new ItemStack(Blocks.REDSTONE_BLOCK)), false));
+        // this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, false));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, DarknessEntity.class, false));
         this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2, true));
-        this.goalSelector.addGoal(4, new HurtByTargetGoal(this, Mob.class));
+        this.targetSelector.addGoal(4, new HurtByTargetGoal(this, MobEntity.class));
         this.goalSelector.addGoal(5, new OpenDoorGoal(this, true));
-        this.goalSelector.addGoal(6, new MoveTowardsRestrictionGoal(this, 1.0));
-        this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, DarknessEntity.class, ModEntityTypes.RANGE));
-        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, ModEntityTypes.RANGE));
-        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, DarknessXEntity.class, ModEntityTypes.RANGE));
-        this.goalSelector.addGoal(10, new RandomStrollGoal(this, 1));
-        this.goalSelector.addGoal(11, new FloatGoal(this));
-        this.goalSelector.addGoal(12, new LeapAtTargetGoal(this, 0.8F));
-        this.goalSelector.addGoal(13, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(6, new MoveTowardsRestrictionGoal(this, 1.0));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, ModEntityTypes.RANGE));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, DarknessXEntity.class, ModEntityTypes.RANGE));
+        this.goalSelector.addGoal(9, new LookAtGoal(this, DarknessEntity.class, ModEntityTypes.RANGE));
+        this.goalSelector.addGoal(10, new RandomWalkingGoal(this, 1));
+        this.goalSelector.addGoal(11, new SwimGoal(this));
+        // this.goalSelector.addGoal(12, new LeapAtTargetGoal(this, 0.8F));
+        this.goalSelector.addGoal(13, new LookRandomlyGoal(this));
     }
 
     protected SoundEvent getAmbientSound() {
@@ -76,24 +77,28 @@ public class DarknessXEntity extends PathfinderMob {
         if (src == DamageSource.CACTUS) return false;
         if (src == DamageSource.DROWN) return false;
         if (src == DamageSource.LIGHTNING_BOLT) return false;
-        if (src.getEntity() instanceof Player) return false;
-        if (src.getEntity() instanceof Arrow) return false;
-        if (src.getEntity() instanceof IronGolem) return false;
+        if (src.getEntity() instanceof PlayerEntity) return false;
+        if (src.getEntity() instanceof ArrowEntity) return false;
 
         super.hurt(src, dmg);
 
         return true;
     }
-    
-    protected boolean shouldDespawnInPeaceful() {
-        return true;
+
+    public ILivingEntityData finalizeSpawn(IServerWorld l, DifficultyInstance d, SpawnReason r, @Nullable ILivingEntityData i, @Nullable CompoundNBT n) {
+        ILivingEntityData data = super.finalizeSpawn(l, d, r, i, n);
+        LivingEntity e = this;
+        if (e.level.dimension() == World.END && Math.random() * 4 >= 1) e.remove();
+        System.out.println("END SPAWN");
+
+        return data;
     }
 
     public void tick() {
         super.tick();
         if (lol) return;
-        Level level = this.getLevel();
-        Player player = level.getNearestPlayer(this, ModEntityTypes.RANGE);
+        World level = this.level;
+        PlayerEntity player = level.getNearestPlayer(this, ModEntityTypes.RANGE);
 
         if (player == null) return;
 
@@ -107,8 +112,8 @@ public class DarknessXEntity extends PathfinderMob {
         double px = player.getX();
         double py = player.getY();
         double pz = player.getZ();
-        double ptheta = (-1 * player.getYRot() - 90 + 720) % 360;
-        double pphi = -1 * player.getXRot();
+        double ptheta = (-1 * player.yHeadRot - 90 + 720) % 360;
+        double pphi = -1 * player.xRot;
 
         // if (Math.random() < 0.1) System.out.println(ptheta + " " + pphi);
 
@@ -147,13 +152,31 @@ public class DarknessXEntity extends PathfinderMob {
         if (thetacheck && (phicheck || phicheck2)) {
             // System.out.println("!!!!!");
             // this.setNoAi(true);
-            this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 100, false, false));
+            this.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 100, 100, false, false));
         }
         else if (exists) {
             // System.out.println("=====");
-            this.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
-            if (dist3d >= 100) this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 3, 3, false, false));
-            else this.removeEffect(MobEffects.MOVEMENT_SPEED);
+            this.removeEffect(Effects.MOVEMENT_SLOWDOWN);
+            if (dist3d >= 100) this.addEffect(new EffectInstance(Effects.MOVEMENT_SPEED, 3, 3, false, false));
+            else this.removeEffect(Effects.MOVEMENT_SPEED);
         }
+    }
+
+    public void x(String s, PlayerEntity player) {
+        player.sendMessage(new StringTextComponent(s), player.getUUID());
+    }
+
+    public String introDialogue[] = {"...", "Hi there.", "Oh, it's you.", "Hello!", "Hi!", "Rawr!", "Hewwo!"};
+    public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+        if (level.isClientSide()) return ActionResultType.sidedSuccess(this.level.isClientSide);
+        try {
+            int index = (int)(Math.random() * introDialogue.length);
+            x(introDialogue[index], player);
+        }
+        catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return ActionResultType.sidedSuccess(this.level.isClientSide);
     }
 }
