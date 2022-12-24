@@ -1,0 +1,16 @@
+[
+{
+  "modid": "darkness",
+  "name": "Another Generic Entity Mod",
+  "description": "Another Generic Entity Mod",
+  "version": "1.0",
+  "mcversion": "1.7.10",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["NOTASMR"],
+  "credits": "NOTASMR",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
