@@ -26,14 +26,14 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class DarknessXEntity extends MonsterEntity {
+public class DarknessXEntity extends CreatureEntity {
     public DarknessXEntity(EntityType<? extends DarknessXEntity> type, World level) {
         super(type, level);
         ((GroundPathNavigator)this.getNavigation()).setCanOpenDoors(true);
     }
 
     public static AttributeModifierMap.MutableAttribute registerAttributes() {
-        return MonsterEntity.createMonsterAttributes()
+        return MonsterEntity.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 40.0D)
                 .add(Attributes.MOVEMENT_SPEED, ModEntityTypes.SPEED)
                 .add(Attributes.FOLLOW_RANGE, ModEntityTypes.RANGE)
