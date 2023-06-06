@@ -86,7 +86,7 @@ public class DarknessEntity extends Monster {
         SpawnGroupData data = super.finalizeSpawn(sla, di, mst, sgd, ct);
         LivingEntity e = this;
         if (e.getLevel().dimension() == Level.END && Math.random() * 4 >= 1) e.remove(RemovalReason.DISCARDED);
-        if (e.getLevel().dimension() == Level.END && Math.random() * 2 >= 1) e.remove(RemovalReason.DISCARDED);
+        if (e.getLevel().dimension() == Level.NETHER && Math.random() * 2 >= 1) e.remove(RemovalReason.DISCARDED);
         System.out.println("END SPAWN");
 
         return data;
