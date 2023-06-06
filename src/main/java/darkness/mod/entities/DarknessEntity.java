@@ -86,6 +86,7 @@ public class DarknessEntity extends Monster {
         SpawnGroupData data = super.finalizeSpawn(sla, di, mst, sgd, ct);
         LivingEntity e = this;
         if (e.getLevel().dimension() == Level.END && Math.random() * 4 >= 1) e.remove(RemovalReason.DISCARDED);
+        if (e.getLevel().getBiome(e.getOnPos()) == Biomes.SOUL_SAND_VALLEY && Math.random() * 64 >= 1) e.remove(RemovalReason.DISCARDED);
         System.out.println("END SPAWN");
 
         return data;
