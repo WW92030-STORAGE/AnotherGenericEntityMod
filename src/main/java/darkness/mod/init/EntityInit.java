@@ -14,6 +14,7 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraft.init.Biomes;
 
 public class EntityInit {
 	public static final int RANGE = 128;
@@ -27,10 +28,11 @@ public class EntityInit {
 	private static Biome[] biomes(net.minecraft.util.registry.RegistryNamespaced<ResourceLocation, Biome> in) {
 		Iterator<Biome> iter = in.iterator();
 		ArrayList<Biome> list = new ArrayList<Biome>();
-		while (iter.hasNext())
+		while (iter.hasNext()) {
 			Biome b = iter.next();
 			if (b == Biomes.MUSHROOM_ISLAND || b == Biomes.MUSHROOM_ISLAND_SHORE) continue;
-			list.add();
+			list.add(b);
+		}
 		return list.toArray(new Biome[list.size()]);
 	}
 	
