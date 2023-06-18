@@ -28,7 +28,9 @@ public class EntityInit {
 		Iterator<Biome> iter = in.iterator();
 		ArrayList<Biome> list = new ArrayList<Biome>();
 		while (iter.hasNext())
-			list.add(iter.next());
+			Biome b = iter.next();
+			if (b == Biomes.MUSHROOM_ISLAND || b == Biomes.MUSHROOM_ISLAND_SHORE) continue;
+			list.add();
 		return list.toArray(new Biome[list.size()]);
 	}
 	
