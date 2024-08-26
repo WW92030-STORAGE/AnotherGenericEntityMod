@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 public class DarknessEntity extends Monster {
     public DarknessEntity(EntityType<? extends DarknessEntity> type, Level level) {
@@ -40,12 +41,12 @@ public class DarknessEntity extends Monster {
     }
 
     protected void registerGoals() {
-        this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        this.goalSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, DarknessXEntity.class, true));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, DarknessXEntity.class, false));
         this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2, true));
-        this.goalSelector.addGoal(4, new HurtByTargetGoal(this, Mob.class));
+        this.targetSelector.addGoal(4, new HurtByTargetGoal(this, Mob.class));
         this.goalSelector.addGoal(5, new OpenDoorGoal(this, true));
-        this.goalSelector.addGoal(6, new MoveTowardsRestrictionGoal(this, 1.0));
+        this.targetSelector.addGoal(6, new MoveTowardsRestrictionGoal(this, 1.0));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, ModEntityTypes.RANGE));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, DarknessXEntity.class, ModEntityTypes.RANGE));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, DarknessEntity.class, ModEntityTypes.RANGE));
@@ -82,18 +83,36 @@ public class DarknessEntity extends Monster {
         return true;
     }
 
+    void depopulate() {
+        Entity e = this;
+        Level level = e.getLevel();
+        Player p = level.getNearestPlayer(this, 128);
+        if (p == null) return;
+
+        ArrayList<Entity> list = Reference.aabb(p, p.getX() - 128, p.getY() - 16, p.getZ() - 128., p.getX() + 128, p.getY() + 16, p.getZ() + 128);
+
+        int cnt = 0;
+        for (Entity ee : list) {
+            if (ee instanceof DarknessEntity) cnt++;
+        }
+        if (cnt > Reference.MAX_PER_PLAYER) e.remove(RemovalReason.DISCARDED);
+    }
+
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor sla, DifficultyInstance di, MobSpawnType mst, @Nullable SpawnGroupData sgd, @Nullable CompoundTag ct) {
         SpawnGroupData data = super.finalizeSpawn(sla, di, mst, sgd, ct);
         LivingEntity e = this;
         if (e.getLevel().dimension() == Level.END && Math.random() * 4 >= 1) e.remove(RemovalReason.DISCARDED);
         if (e.getLevel().dimension() == Level.NETHER && Math.random() * 2 >= 1) e.remove(RemovalReason.DISCARDED);
-        System.out.println("END SPAWN");
+
+        depopulate();
+
 
         return data;
     }
 
     public void tick() {
         super.tick();
+        if (Math.random() < 10 / 4096.0) depopulate();
         if (lol) return;
         Level level = this.getLevel();
         Player player = level.getNearestPlayer(this, ModEntityTypes.RANGE);

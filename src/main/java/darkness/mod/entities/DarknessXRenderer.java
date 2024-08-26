@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public class DarknessXRenderer<T extends DarknessXEntity> extends MobRenderer<T, PlayerModel<T>> {
-    private static final ResourceLocation texture = new ResourceLocation(Reference.MODID, "textures/model/darkness0.png");;
+    private static final ResourceLocation texture = new ResourceLocation(Reference.MODID, "textures/model/darkness1.png");;
     private final Model model;
 
     public DarknessXRenderer(EntityRendererProvider.Context manager) {
