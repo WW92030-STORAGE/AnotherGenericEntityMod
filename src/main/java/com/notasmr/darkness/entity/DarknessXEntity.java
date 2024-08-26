@@ -25,6 +25,7 @@ import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 public class DarknessXEntity extends CreatureEntity {
     public DarknessXEntity(EntityType<? extends DarknessXEntity> type, World level) {
@@ -85,11 +86,28 @@ public class DarknessXEntity extends CreatureEntity {
         return true;
     }
 
+    void depopulate() {
+        Entity e = this;
+        World level = e.level;
+        PlayerEntity p = level.getNearestPlayer(this, 128);
+        if (p == null) return;
+
+        ArrayList<Entity> list = Reference.aabb(p, p.getX() - 128, p.getY() - 16, p.getZ() - 128., p.getX() + 128, p.getY() + 16, p.getZ() + 128);
+
+        int cnt = 0;
+        for (Entity ee : list) {
+            if (ee instanceof DarknessXEntity) cnt++;
+        }
+        if (cnt > Reference.MAX_PER_PLAYER) e.remove();
+    }
+
     public ILivingEntityData finalizeSpawn(IServerWorld l, DifficultyInstance d, SpawnReason r, @Nullable ILivingEntityData i, @Nullable CompoundNBT n) {
         ILivingEntityData data = super.finalizeSpawn(l, d, r, i, n);
         LivingEntity e = this;
         if (e.level.dimension() == World.END && Math.random() * 4 >= 1) e.remove();
         System.out.println("END SPAWN");
+
+        depopulate();
 
         return data;
     }
@@ -97,6 +115,7 @@ public class DarknessXEntity extends CreatureEntity {
     public void tick() {
         super.tick();
         if (lol) return;
+        if (Math.random() < 1.0 / 4096.0) depopulate();
         World level = this.level;
         PlayerEntity player = level.getNearestPlayer(this, ModEntityTypes.RANGE);
 

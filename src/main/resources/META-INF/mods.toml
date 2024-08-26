@@ -29,9 +29,9 @@ displayName="Another Generic Entity Mod" #mandatory
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="darkness.png" #optional
 # A text field displayed in the mod UI
-credits="NormalExisting" #optional
+credits="NOTASMR" #optional
 # A text field displayed in the mod UI
-authors="NormalExisting" #optional
+authors="NOTASMR" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 Another generic entity mod.'''
