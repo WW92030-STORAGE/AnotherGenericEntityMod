@@ -29,7 +29,7 @@ public class DarknessXEntity extends EntityCreature {
         this.getNavigator().setBreakDoors(true);
         this.getNavigator().setEnterDoors(true);
 
-        this.tasks.addTask(0, new EntityAITempt(this, 1, Item.getItemFromBlock(Blocks.redstone_block), false));
+        this.tasks.addTask(0, new EntityAITempt(this, 0.25, Item.getItemFromBlock(Blocks.redstone_block), false));
         this.tasks.addTask(0, new EntityAIAttackOnCollide(this, DarknessEntity.class, 1.0D, false));
         this.targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, DarknessEntity.class, 1, false));
         this.tasks.addTask(4, new EntityAIHurtByTarget(this, false));
@@ -228,3 +228,4 @@ public class DarknessXEntity extends EntityCreature {
         return flag;
     }
 }
+
