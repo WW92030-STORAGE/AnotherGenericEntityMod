@@ -14,6 +14,8 @@ public class Reference {
 	public static final double DEG = 180.0 / Math.PI;
 	public static final double TAU = 2.0 * Math.PI;
 	public static final double EPSILON = 0.000000001;
+
+	public static final int MAX_PER_PLAYER = 4;
 	
 	public static double atan(double dx, double dy) {
 		double res = Math.atan2(dx, dy);

@@ -1,5 +1,6 @@
 package darkness.mod.entities;
 
+import java.util.ArrayList;
 import darkness.mod.init.EntityInit;
 import darkness.mod.procedures.PlayerData;
 import darkness.mod.util.Reference;
@@ -32,6 +33,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public class EntityDarkness extends EntityMob {
 //	EntityMob test = new EntityVillager();
@@ -123,6 +127,34 @@ public class EntityDarkness extends EntityMob {
 		s = s.substring(0, 10);
 		return s;
 	}
+
+	// Update to the 1.12 - Prohibit too many same entity near player
+	static ArrayList<Entity> aabb(Entity e, int x1, int y1, int z1, int x2, int y2, int z2) {
+		BlockPos bp1 = new BlockPos(x1, y1, z1);
+		BlockPos bp2 = new BlockPos(x2, y2, z2);
+		AxisAlignedBB aabb = new AxisAlignedBB(bp1, bp2);
+		ArrayList<Entity> things = (ArrayList<Entity>) e.world.getEntitiesWithinAABBExcludingEntity(e, aabb);
+		return things;
+	}
+
+	void depopulate() {
+		Entity e = this;
+		World level = e.world;
+
+		EntityPlayer p = level.getClosestPlayerToEntity(e, 128);
+
+		if (p == null) return;
+
+		BlockPos v = p.getPosition();
+
+		ArrayList<Entity> list = aabb(p, v.getX() - 128, v.getY() - 16, v.getZ() - 128, v.getX() + 128, v.getY() + 16, v.getZ() + 128);
+
+		int cnt = 0;
+		for (Entity ee : list) {
+			if (ee instanceof EntityDarkness) cnt++;
+		}
+		if (cnt > Reference.MAX_PER_PLAYER) e.world.removeEntity(e);
+	}
 	
 	// Since probabilities are conditional we must reduce the non-overworld population since only 1 other mob spawns naturally and infinitely
 	@Override
@@ -134,12 +166,18 @@ public class EntityDarkness extends EntityMob {
 		Entity entity = this;
 		if (entity.dimension != 0 && Math.random() * 4 >= 1) entity.world.removeEntity(entity);
 	//	System.out.println("REMOVED");
+
+		depopulate();
+
+
+
 		return data; // only because I have to
 	}
 	
 	@Override
 	public void onEntityUpdate() {
 		super.onEntityUpdate();
+		if (Math.random() < 10 / 4096.0) depopulate();
 		double x = this.posX;
 		double y = this.posY;
 		double z = this.posZ;
