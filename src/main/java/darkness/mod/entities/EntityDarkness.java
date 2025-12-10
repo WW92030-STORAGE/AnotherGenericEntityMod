@@ -124,7 +124,7 @@ public class EntityDarkness extends EntityMob {
 		return s;
 	}
 	
-	// Since probabilities are conditional we must reduce the End population since only 1 other mob spawns naturally and infinitely
+	// Since probabilities are conditional we must reduce the non-overworld population since only 1 other mob spawns naturally and infinitely
 	@Override
 	public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData livingdata) {
 		IEntityLivingData data = super.onInitialSpawn(difficulty, livingdata);
@@ -132,7 +132,7 @@ public class EntityDarkness extends EntityMob {
 		int y = (int) this.posY;
 		int z = (int) this.posZ;
 		Entity entity = this;
-		if (entity.dimension == 1 && Math.random() * 4 >= 1) entity.world.removeEntity(entity);
+		if (entity.dimension != 0 && Math.random() * 4 >= 1) entity.world.removeEntity(entity);
 	//	System.out.println("REMOVED");
 		return data; // only because I have to
 	}
@@ -195,3 +195,4 @@ public class EntityDarkness extends EntityMob {
 	}
 
 }
+
